@@ -12,30 +12,38 @@ import time
 # ============================================================================
 
 def lcs_recursive(seq1, seq2):
-    """
-    Find the length of longest common subsequence using pure recursion.
+    if len(seq1) == 0 or len(seq2) == 0:
+        return 0
+    if seq1[-1] == seq2[-1]:
+        return 1 + lcs_recursive(seq1[:-1], seq2[:-1])
+    else:
+        option1 = lcs_recursive(seq1[:-1], seq2)
+        option2 = lcs_recursive(seq1, seq2[:-1])
+        return max(option1, option2)
+    # """
+    # Find the length of longest common subsequence using pure recursion.
     
-    A subsequence is a sequence that appears in the same relative order but not
-    necessarily contiguous. For example, "ACE" is a subsequence of "ABCDE".
+    # A subsequence is a sequence that appears in the same relative order but not
+    # necessarily contiguous. For example, "ACE" is a subsequence of "ABCDE".
     
-    Args:
-        seq1 (str): First DNA sequence
-        seq2 (str): Second DNA sequence
+    # Args:
+    #     seq1 (str): First DNA sequence
+    #     seq2 (str): Second DNA sequence
     
-    Returns:
-        int: Length of longest common subsequence
+    # Returns:
+    #     int: Length of longest common subsequence
     
-    Example:
-        lcs_recursive("AGGTAB", "GXTXAYB") returns 4 (LCS is "GTAB")
+    # Example:
+    #     lcs_recursive("AGGTAB", "GXTXAYB") returns 4 (LCS is "GTAB")
     
-    WARNING: This will be exponentially slow on large inputs!
-    """
+    # WARNING: This will be exponentially slow on large inputs!
+    # """
     # TODO: Implement naive recursive solution
     # Hint: Base case - if either sequence is empty, LCS length is 0
     # Hint: If last characters match, LCS length = 1 + LCS of remaining sequences
     # Hint: If last characters don't match, try removing last char from each sequence, take max
     
-    pass  # Delete this and write your code
+      # Delete this and write your code
 
 
 # ============================================================================
@@ -43,29 +51,43 @@ def lcs_recursive(seq1, seq2):
 # ============================================================================
 
 def lcs_memoization(seq1, seq2):
-    """
-    Find the length of longest common subsequence using memoization.
+    cache = {}
+    def helper(i, j):
+        if (i, j) in cache:
+            return cache[(i, j)]
+        if i == 0 or j == 0:
+            return 0
+        if seq1[i-1] == seq2[j-1]:
+            result = 1 + helper(i-1, j-1)
+        else:
+            result = max(helper(i-1, j), helper(i, j-1))
+        cache[(i, j)] = result
+        return result
+    return helper(len(seq1), len(seq2))
+
+#     # """
+    # Find the length of longest common subsequence using memoization.
     
-    Memoization caches results of subproblems to avoid redundant calculations.
-    This is a top-down approach - starts with original problem and breaks down.
+    # Memoization caches results of subproblems to avoid redundant calculations.
+    # This is a top-down approach - starts with original problem and breaks down.
     
-    Args:
-        seq1 (str): First DNA sequence
-        seq2 (str): Second DNA sequence
+    # Args:
+    #     seq1 (str): First DNA sequence
+    #     seq2 (str): Second DNA sequence
     
-    Returns:
-        int: Length of longest common subsequence
+    # Returns:
+    #     int: Length of longest common subsequence
     
-    Example:
-        lcs_memoization("AGGTAB", "GXTXAYB") returns 4 (LCS is "GTAB")
-    """
+    # Example:
+    #     lcs_memoization("AGGTAB", "GXTXAYB") returns 4 (LCS is "GTAB")
+    # """
     # TODO: Implement memoization solution
     # Hint: Create a cache dictionary to store results
     # Hint: Use tuple of (i, j) as key where i, j are positions in sequences
     # Hint: Check cache before computing, store result before returning
     # Hint: You may want to create a helper function that takes indices
     
-    pass  # Delete this and write your code
+  # Delete this and write your code
 
 
 # ============================================================================
@@ -73,22 +95,33 @@ def lcs_memoization(seq1, seq2):
 # ============================================================================
 
 def lcs_tabulation(seq1, seq2):
-    """
-    Find the length of longest common subsequence using tabulation.
+    X = len(seq1)
+    D = len(seq2)
+    table = [[0 for _ in range (D + 1)] for _ in range(X +1)]
+    for i in range(1, X +1):
+        for j in range(1, D +1):
+            if seq1[i-1] == seq2[j-1]:
+                table[i][j] = 1 + table[i-1][j-1]
+            else:
+                table[i][j] = max(table[i-1][j], table[i][j-1])
+    return table[X][D]
+
+    # """
+    # Find the length of longest common subsequence using tabulation.
     
-    Tabulation builds a table iteratively from base cases up to the solution.
-    This is a bottom-up approach - starts with smallest subproblems.
+    # Tabulation builds a table iteratively from base cases up to the solution.
+    # This is a bottom-up approach - starts with smallest subproblems.
     
-    Args:
-        seq1 (str): First DNA sequence
-        seq2 (str): Second DNA sequence
+    # Args:
+    #     seq1 (str): First DNA sequence
+    #     seq2 (str): Second DNA sequence
     
-    Returns:
-        int: Length of longest common subsequence
+    # Returns:
+    #     int: Length of longest common subsequence
     
-    Example:
-        lcs_tabulation("AGGTAB", "GXTXAYB") returns 4 (LCS is "GTAB")
-    """
+    # Example:
+    #     lcs_tabulation("AGGTAB", "GXTXAYB") returns 4 (LCS is "GTAB")
+    # """
     # TODO: Implement tabulation solution
     # Hint: Create a 2D table where dp[i][j] = LCS length of seq1[0..i] and seq2[0..j]
     # Hint: Initialize first row and column to 0 (empty sequence cases)
@@ -96,7 +129,7 @@ def lcs_tabulation(seq1, seq2):
     # Hint: If characters match: dp[i][j] = dp[i-1][j-1] + 1
     # Hint: If characters don't match: dp[i][j] = max(dp[i-1][j], dp[i][j-1])
     
-    pass  # Delete this and write your code
+      # Delete this and write your code
 
 
 # ============================================================================
@@ -240,8 +273,8 @@ if __name__ == "__main__":
     
     # Uncomment these as you complete each part:
     
-    # test_small_cases()
-    # time_recursive()
-    # compare_all_approaches()
+    test_small_cases()
+    time_recursive()
+    compare_all_approaches()
     
     print("\n⚠ Uncomment the test functions in the main block to run tests!")
